@@ -1,0 +1,15 @@
+{
+  "title": "יצירת הפרויקט",
+  "language_label": "שפה:",
+  "project_name_label": "יצירת פרויקט בשם",
+  "create_project": "!צור",
+  "error_title": "שגיאה",
+  "saving_settings_warning": "משהו השתבש בשמירת ההגדרות",
+  "provide_project_name": "הגדר את שם הפרויקט",
+  "folder": "תיקייה",
+  "already exists": "כבר קיימת",
+  "new_project_label": "נוצר פרויקט חדש:",
+  "success_title": "התהליך הסתיים",
+  "success_message": "הפרויקט נוצר בהצלחה!"
+}
+

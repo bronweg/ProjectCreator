@@ -1,0 +1,16 @@
+{
+  "title": "Project creator",
+  "language_label": "Language:",
+  "project_name_label": "Create project named",
+  "create_project": "Create",
+  "error_title": "Error",
+  "saving_settings_warning": "Something went wrong while saving settings",
+  "provide_project_name": "Define project name",
+  "folder": "folder",
+  "already exists": "already exists",
+  "new_project_label": "Created new project",
+  "success_title": "Success",
+  "success_message": "Project created successfully!"
+}
+
+

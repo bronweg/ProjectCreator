@@ -1,0 +1,15 @@
+{
+  "title": "Создание Проекта",
+  "language_label": "Язык:",
+  "project_name_label": "Имя проекта",
+  "create_project": "Создай",
+  "error_title": "Ошибка",
+  "saving_settings_warning": "Возникла проблема при сохранении настроек",
+  "provide_project_name": "Укажите имя проекта",
+  "folder": "папка",
+  "already exists": "уже существует",
+  "new_project_label": "Создан новый проект",
+  "success_title": "Процесс завершен",
+  "success_message": "Проект создан успешно!"
+}
+
