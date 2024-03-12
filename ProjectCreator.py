@@ -155,7 +155,7 @@ class HierarchyMaker(QWidget):
 
         project_folder_path = os.path.join(date_name_folder_path, project_folder)
         if os.path.exists(project_folder_path):
-            error_message = f'{self.translate_key('folder')} {project_folder} {self.translate_key('already_exists')} at {current_date}.'
+            error_message = f'{self.translate_key("folder")} {project_folder} {self.translate_key("already_exists")} at {current_date}.'
             QMessageBox.warning(self, self.translate_key('error_title'), error_message)
             return
         else:
