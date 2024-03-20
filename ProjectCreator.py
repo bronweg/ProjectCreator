@@ -18,6 +18,7 @@ class HierarchyMaker(QWidget):
         self.current_language = self.get_language(settings)
         self.translations = self.load_translations(self.current_language)
         self.project_path, self.project_folder = self.get_project_path(settings)
+        self.images_folder = self.get_images_folder(settings)
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.locale_subjects = dict()
@@ -36,7 +37,8 @@ class HierarchyMaker(QWidget):
         settings = {
             'language': self.current_language,
             'projectPath': self.project_path,
-            'projectFolder': self.project_folder
+            'projectFolder': self.project_folder,
+            'imagesFolder': self.images_folder
         }
         try:
             with open(self.get_settings_file(), 'w') as f:
@@ -67,6 +69,10 @@ class HierarchyMaker(QWidget):
         return \
             settings.get('projectPath', os.path.expanduser("~")), \
             settings.get('projectFolder', 'projects')
+
+    @staticmethod
+    def get_images_folder(settings) -> str:
+        return settings.get('imagesFolder', 'images')
 
     @staticmethod
     def load_language_codes():
@@ -162,7 +168,7 @@ class HierarchyMaker(QWidget):
         else:
             os.makedirs(project_folder_path)
 
-        os.makedirs(os.path.join(project_folder_path, 'images'))
+        os.makedirs(os.path.join(project_folder_path, self.images_folder))
 
         self.newProjPath.setText(project_folder_path)
         self.newProjLabel.setVisible(True)
