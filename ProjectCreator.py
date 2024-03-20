@@ -17,7 +17,7 @@ class HierarchyMaker(QWidget):
         settings = self.load_settings()
         self.current_language = self.get_language(settings)
         self.translations = self.load_translations(self.current_language)
-        self.project_directory = self.get_project_directory(settings)
+        self.project_path, self.project_folder = self.get_project_path(settings)
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.locale_subjects = dict()
@@ -35,7 +35,8 @@ class HierarchyMaker(QWidget):
     def save_settings(self):
         settings = {
             'language': self.current_language,
-            'projectDirectory': self.project_directory
+            'projectPath': self.project_path,
+            'projectFolder': self.project_folder
         }
         try:
             with open(self.get_settings_file(), 'w') as f:
@@ -46,7 +47,6 @@ class HierarchyMaker(QWidget):
     def load_settings(self):
         settings = {
             'language': 'English',
-            'projectDirectory': os.path.expanduser("~"),
         }
         try:
             with open(self.get_settings_file(), 'r') as f:
@@ -63,8 +63,10 @@ class HierarchyMaker(QWidget):
         return settings.get('language', 'English')
 
     @staticmethod
-    def get_project_directory(settings):
-        return settings.get('projectDirectory', os.path.expanduser("~"))
+    def get_project_path(settings) -> tuple[str, str]:
+        return \
+            settings.get('projectPath', os.path.expanduser("~")), \
+            settings.get('projectFolder', 'projects')
 
     @staticmethod
     def load_language_codes():
@@ -148,10 +150,9 @@ class HierarchyMaker(QWidget):
             return
 
         current_date = self.get_current_date()
-        date_name_folder_path = os.path.join(self.project_directory, 'projects', current_date)
+        date_name_folder_path = os.path.join(self.project_path, self.project_folder, current_date)
         if not os.path.exists(date_name_folder_path):
             os.makedirs(date_name_folder_path)
-
 
         project_folder_path = os.path.join(date_name_folder_path, project_folder)
         if os.path.exists(project_folder_path):
