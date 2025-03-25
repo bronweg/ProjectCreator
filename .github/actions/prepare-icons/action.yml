@@ -27,3 +27,10 @@ runs:
           rm -R images/logo.iconset
         fi
       shell: bash
+
+    - name: Convert PNG to XPM (Linux)
+      run: |
+        if [[ ${{ runner.os }} == 'Linux' ]]; then
+          python -c "from PIL import Image; Image.open('images/logo.png').convert('RGB').save('images/logo.xpm')"
+        fi
+      shell: bash

@@ -26,7 +26,7 @@ runs:
           elif [ "${{ runner.os }}" == "macOS" ]; then
             icon_ext="icns"
           else
-            icon_ext="png"
+            icon_ext="xpm"
           fi
           pyinstaller --onefile --windowed \
           --icon=images/logo.$icon_ext \
