@@ -5,9 +5,9 @@ import datetime
 
 
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
-                               QLineEdit, QFileDialog, QComboBox, QMessageBox, QProgressBar)
-from PySide6.QtCore import Qt, QThread, Signal
-from PySide6.QtGui import (QIcon, QPixmap)
+                               QLineEdit, QComboBox, QMessageBox)
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 
 
 
@@ -19,10 +19,17 @@ class HierarchyMaker(QWidget):
         self.translations = self.load_translations(self.current_language)
         self.project_path, self.project_folder = self.get_project_path(settings)
         self.images_folder = self.get_images_folder(settings)
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
+
+        # declare QComponent groups
         self.locale_subjects = dict()
         self.direction_subjects = list()
+
+        # declare QComponents
+        self.langComboBox = None
+        self.projNameLineEdit = None
+        self.newProjPath = None
+        self.newProjLabel = None
+
         self.setup_ui()
         self.apply_settings()
         self.change_language(self.current_language)
@@ -97,51 +104,63 @@ class HierarchyMaker(QWidget):
         return self.translations.get(text_key, text_key)
 
     def setup_ui(self):
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+
         # Update Logo
-        self.logoLabel = QLabel(self)
-        self.logoPixmap = QPixmap('images/logo.png')
-        scaledLogoPixmap = self.logoPixmap.scaled(100, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.logoLabel.setPixmap(scaledLogoPixmap)
-        self.logoLabel.setFixedSize(scaledLogoPixmap.size())
-        self.layout.addWidget(self.logoLabel)
+        logoLabel = QLabel(self)
+        logoPixmap = QPixmap('images/logo.png')
+        scaledLogoPixmap = logoPixmap.scaled(100, 100, Qt.AspectRatioMode.KeepAspectRatio,
+                                                  Qt.TransformationMode.SmoothTransformation)
+        logoLabel.setPixmap(scaledLogoPixmap)
+        logoLabel.setFixedSize(scaledLogoPixmap.size())
+        layout.addWidget(logoLabel)
 
         # Language selection
-        self.languageLabel = QLabel()
-        self.locale_subjects['language_label'] = self.languageLabel
-        self.langComboBox = QComboBox()
-        self.langComboBox.addItems(self.load_language_names())
-        self.langComboBox.currentTextChanged.connect(self.change_language)
+        languageLabel = QLabel()
+        langComboBox = QComboBox()
+        langComboBox.addItems(self.load_language_names())
+        langComboBox.currentTextChanged.connect(self.change_language)
         langLayout = QHBoxLayout()
-        langLayout.addWidget(self.languageLabel)
-        langLayout.addWidget(self.langComboBox)
-        self.direction_subjects.append(langLayout)
-        self.layout.addLayout(langLayout)
+        langLayout.addWidget(languageLabel)
+        langLayout.addWidget(langComboBox)
+        layout.addLayout(langLayout)
+
 
         # Project selection
-        self.projNameLabel = QLabel()
-        self.locale_subjects['project_name_label'] = self.projNameLabel
-        self.projNameLineEdit = QLineEdit()
-        self.createProjButton = QPushButton()
-        self.createProjButton.clicked.connect(self.create_project)
-        self.locale_subjects['create_project'] = self.createProjButton
+        projNameLabel = QLabel()
+        projNameLineEdit = QLineEdit()
+        createProjButton = QPushButton()
+        createProjButton.clicked.connect(self.create_project)
         createProjLayout = QHBoxLayout()
-        createProjLayout.addWidget(self.projNameLabel)
-        createProjLayout.addWidget(self.projNameLineEdit)
-        createProjLayout.addWidget(self.createProjButton)
-        self.direction_subjects.append(createProjLayout)
-        self.layout.addLayout(createProjLayout)
+        createProjLayout.addWidget(projNameLabel)
+        createProjLayout.addWidget(projNameLineEdit)
+        createProjLayout.addWidget(createProjButton)
+        layout.addLayout(createProjLayout)
 
         # New project info
-        self.newProjLabel = QLabel()
-        self.newProjLabel.setVisible(False)
-        self.locale_subjects['new_project_label'] = self.newProjLabel
+        newProjLabel = QLabel()
+        newProjLabel.setVisible(False)
         #self.direction_subjects.append(self.newProjLabel)
-        self.newProjPath = QLineEdit()
-        self.newProjPath.setReadOnly(True)
-        self.newProjPath.setVisible(False)
+        newProjPath = QLineEdit()
+        newProjPath.setReadOnly(True)
+        newProjPath.setVisible(False)
         #self.direction_subjects.append(self.newProjPath)
-        self.layout.addWidget(self.newProjLabel)
-        self.layout.addWidget(self.newProjPath)
+        layout.addWidget(newProjLabel)
+        layout.addWidget(newProjPath)
+
+        self.locale_subjects['language_label'] = languageLabel
+        self.locale_subjects['project_name_label'] = projNameLabel
+        self.locale_subjects['create_project'] = createProjButton
+        self.locale_subjects['new_project_label'] = newProjLabel
+
+        self.direction_subjects.append(langLayout)
+        self.direction_subjects.append(createProjLayout)
+
+        self.langComboBox = langComboBox
+        self.projNameLineEdit = projNameLineEdit
+        self.newProjPath = newProjPath
+        self.newProjLabel = newProjLabel
 
 
     @staticmethod
@@ -174,7 +193,9 @@ class HierarchyMaker(QWidget):
         self.newProjLabel.setVisible(True)
         self.newProjPath.setVisible(True)
 
-        QMessageBox.information(self, self.translate_key('success_title'), self.translate_key('success_message'))
+        QMessageBox.information(self, self.translate_key('success_title'), self.translate_key('success_message'),
+                                QMessageBox.StandardButton.Ok)
+
 
 
     def change_language(self, language):
@@ -190,7 +211,7 @@ class HierarchyMaker(QWidget):
         # Update layout
         is_rtl = (language == 'עברית')
         for direction_subject in self.direction_subjects:
-            direction_subject.setDirection(QHBoxLayout.RightToLeft if is_rtl else QHBoxLayout.LeftToRight)
+            direction_subject.setDirection(QHBoxLayout.Direction.RightToLeft if is_rtl else QHBoxLayout.Direction.LeftToRight)
 
         self.save_settings()
 
