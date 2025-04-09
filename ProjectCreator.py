@@ -1,14 +1,22 @@
+from talelle_setup import Path, TALELLE_DIR, config_log
+TALELLE_TOOL = Path(__file__).stem
+config_log(TALELLE_TOOL)
+
 import sys
 import os
 import json
 import datetime
 
-
+import logging
 from PySide6.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
                                QLineEdit, QComboBox, QMessageBox)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QPixmap
 
+
+
+logger = logging.getLogger(__name__)
+logger.info(f'{TALELLE_TOOL} started')
 
 
 class HierarchyMaker(QWidget):
@@ -36,9 +44,7 @@ class HierarchyMaker(QWidget):
 
     @staticmethod
     def get_settings_file():
-        home_dir = os.path.expanduser('~')
-        filename = 'HierarchyMaker.json'
-        return os.path.join(home_dir, filename)
+        return os.path.join(TALELLE_DIR, f'{TALELLE_TOOL}.json')
 
     def save_settings(self):
         settings = {
@@ -69,6 +75,7 @@ class HierarchyMaker(QWidget):
 
     @staticmethod
     def get_language(settings):
+        logger.warning('getting language!!!!!')
         return settings.get('language', 'English')
 
     @staticmethod
